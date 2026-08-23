@@ -1,0 +1,26 @@
+// Example Node.js Backend Snippet
+const express = require('express');
+const app = express();
+
+// Simulated Database of active keys and their expiration times
+const database = {
+    "KEY_12345": { expiresAt: Date.now() + 86400000 } // 1 Day
+};
+
+app.get('/verify', (req, res) => {
+    const userKey = req.query.key;
+    
+    // Check if it's your developer bypass key
+    if (userKey === "killez" || userKey === "jelly") {
+        return res.json({ success: true, message: "Developer access granted" });
+    }
+
+    // Check regular database keys
+    if (database[userKey] && database[userKey].expiresAt > Date.now()) {
+        return res.json({ success: true, message: "Key is valid" });
+    } else {
+        return res.json({ success: false, message: "Key expired or invalid" });
+    }
+});
+
+app.listen(3000);
